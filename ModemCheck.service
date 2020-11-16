@@ -1,0 +1,14 @@
+[Unit]
+Description=Status service for CM1050V modem
+After=network.target
+Requires=network.target
+StartLimitIntervalSec=30
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=5
+ExecStart=/usr/local/lib/ModemCheck/ModemCheck.py -l /usr/local/lib/ModemCheck/ModemCheck.log -vv -q -p /usr/local/lib/ModemCheck/ModemPassword -d /usr/local/lib/ModemCheck/ModemData.json
+
+[Install]
+WantedBy=multi-user.target
