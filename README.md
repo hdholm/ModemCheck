@@ -38,7 +38,7 @@ import should do the job.
 ## Backstory
 
 I have, for better or worse, a
-[Netgear CM1150V Cable Modem][https://www.netgear.com/home/products/networking/cable-modems-routers/CM1150V.aspx]
+[Netgear CM1150V Cable Modem](https://www.netgear.com/home/products/networking/cable-modems-routers/CM1150V.aspx)
 on the Comcast - er, Xfinity, or whatever the monopolistic entity is
 calling itself today, network. It's been a bumpy ride.  Leaving for
 another time the stories (yes, more than one) of Comcast installation
