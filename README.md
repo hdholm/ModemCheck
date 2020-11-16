@@ -107,7 +107,7 @@ page source to see what we really need to scrape.  It's an HTML
 frame-based page.  Well isn't that very 1999.  But a quick look at the
 source and clearly we want http://192.168.100.1/DocsisStatus.htm - the
 source of the interesting frame.  Pop that into view-source and W.T.F.
-That's a LOT of JavaScript for such a simple page.  [view-source page][CM1150V-Data]
+That's a LOT of JavaScript for such a simple page.  ![view-source page][CM1150V-Data]
 So much JavaScript.  They must be using it to reach back to the modem to get
 the data to display.  That's going to be royal pain to reverse
 engineer.  W.T.F. again. You would expect that if the data is produced
@@ -262,6 +262,6 @@ produces really wonderfull ouput.  So a quick cron job to ssh the
 resulting html output to a server from time to time and we can easily
 track the state of the cable modem over time.
 
-[CM1150V-Page][https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png]
-[CM1150V-Status][https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png]
-[CM1150V-Data][https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png]
+[CM1150V-Page]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "http://192.168.100.1/"
+[CM1150V-Status]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "http://192.168.100.1/"
+[CM1150V-Data]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "view-source://192.168.100.1/DocsisStatus.htm"
