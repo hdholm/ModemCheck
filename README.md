@@ -7,6 +7,11 @@ that as a Linux server, and display the results are here and use and
 installation below has pretty much everything you need.  If you can't
 stand seeing the sausage get made, you may want to avoid the rest
 
+Comments and improvements are most welcome, but it's doubtful I'll
+spend much more time on this unless circumstances change.  For the
+record, since I created this my network performance has been great
+so there's very little for it to do.
+
 ## Use and Installation
 
 If you have a compatible modem you can query it and display the results
