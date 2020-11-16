@@ -263,5 +263,5 @@ resulting html output to a server from time to time and we can easily
 track the state of the cable modem over time.
 
 [CM1150V-Page]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "http://192.168.100.1/"
-[CM1150V-Status]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "http://192.168.100.1/"
-[CM1150V-Data]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "view-source://192.168.100.1/DocsisStatus.htm"
+[CM1150V-Status]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Status.png "http://192.168.100.1/"
+[CM1150V-Data]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Data.png "view-source://192.168.100.1/DocsisStatus.htm"
