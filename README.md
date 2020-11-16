@@ -41,7 +41,7 @@ I have, for better or worse, a
 [Netgear CM1150V Cable Modem][https://www.netgear.com/home/products/networking/cable-modems-routers/CM1150V.aspx]
 on the Comcast - er, Xfinity, or whatever the monopolistic entity is
 calling itself today, network. It's been a bumpy ride.  Leaving for
-another time the stories (yes, more than one) of Comcast instalation
+another time the stories (yes, more than one) of Comcast installation
 fails, today I'll describe a simple problem, with a less than simple
 solution.  Because, well, things...
 
@@ -74,7 +74,7 @@ could, I enabled it.  After much searching about the Internet and hair
 pulling for why, oh why, my connection speeds would drop significantly
 after a day or so, I discoverd it's a known, but obscure, issue with
 the LAGG ports.  See
-[here][https://community.netgear.com/t5/Cable-Modems-Routers/CM1150V-LACP-LAGG-Firmware-Issue-Comcast-V2-02-04-and-V2-02-03/td-p/1792853]
+[here](https://community.netgear.com/t5/Cable-Modems-Routers/CM1150V-LACP-LAGG-Firmware-Issue-Comcast-V2-02-04-and-V2-02-03/td-p/1792853)
 Netgear has reportedly fixed that issue, BUT, in true Comcast
 fashion, they won't/haven't pushed the updated firmware to the modems.
 I'm sure they're busy.  It's only been *more than a year*
@@ -93,7 +93,7 @@ where they can build some useful scripts for themselves.  It is not
 CompSci 101.  But it seemed like this would be a good example to have
 laying around of how scratching your own itch with your own script
 works.  Fortunately or unfortunately, it turned out to be a really
-excellent example of this really works in practice.
+excellent example of how this really works in practice.
 
 So, aim your broswer at 192.168.100.1, authenticate to the modem, and
 a "basic" configuration page is shown.  ![CM1150V WebPage][CM1150V-Page]
