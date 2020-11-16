@@ -1,5 +1,7 @@
 #!/usr/bin/env python
-""" Starting_block.py a simple script starting point. """
+""" ModemDisplay.py A simple script to pull data from the
+    ModemCheck data file and publish a scatter plot graph
+"""
 import argparse
 import json
 import logging
@@ -56,7 +58,7 @@ def display_stats(datafile_name, outfile_name):
                              'y': 'Frequency (in Hz)',
                              'color': 'Type of Error',
                              'size': 'Number of Corrupted Packets',
-                             }, title="CM1050V Packet Errors")
+                             }, title="CM1150V Packet Errors")
     fig.update_layout(legend=dict(orientation="h",
                                   yanchor="bottom",
                                   y=1.02,
@@ -135,4 +137,4 @@ if __name__ == "__main__":
         # Use a default file
         display_stats(args.datafile, 'ModemDisplay.html')
     else:
-        display_stats(args.datafile, args.outfile)
+        display_stats(args.datafile, args.outfile[0])

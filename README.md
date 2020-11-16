@@ -14,19 +14,21 @@ with ModemCheck.py and ModemDisplay.py fire them up with --help
 for some basic command line help.
 
 Things you may not already have in your python implemenation that
-you'll need.
+you'll need.  If you pip install remember you may want to do that
+as superuser so that the modules will be available to whatever
+user you ultimately use to run the modules. 
 
 1. plotly - which requires pandas.  This is needed by ModemDisplay.
-'pip install plotly' On Fedora 33 I simpy used 'dnf install
-python3-pandas' to get the pandas prequisite, but you should be able
+'pip install plotly' On Fedora 33 I simpy used `dnf install
+python3-pandas` to get the pandas prequisite, but you should be able
 to pip install as well.
-2. pytimeparse - needed for some deltatime manipulation.  Again pip
-import should do the job.
+2. pytimeparse - needed for some deltatime manipulation.  Again `pip
+install pytimeparse` should do the job. 
 
 
 Steps that work for Linux Fedora 33. Others hosts may vary.
 
-1. 'mkdir /usr/local/lib/ModemCheck/` and `mkdir /var/log/ModemCheck/`
+1. `mkdir /usr/local/lib/ModemCheck/` and `mkdir /var/log/ModemCheck/`
 2. `cp ModemCheck.py /usr/local/lib/ModemCheck/`
 3. Create a file `/usr/local/lib/ModemCheck/ModemPassword` containnig
 the password to the modem.  Make sure permissions are restrictive with
@@ -35,7 +37,7 @@ the password to the modem.  Make sure permissions are restrictive with
 5. `systemctl enable ModemCheck`
 6. `systemctl start ModemCheck`
 
-## How the Sausage Gets Made, a tale of Comcast, Netgear, and Python hackery.
+## How the Sausage Gets Made: A Tale of Comcast, Netgear, and Python Hackery.
 
 ## Backstory
 
@@ -166,9 +168,9 @@ and ask for the page we really want with HTTPBasicAuth AND the cookie.
 ```python
 >>> import requests
 >>> from requests.auth import HTTPBasicAuth
->>> page = requests.get('http://192.168.100.1/',auth=HTTPBasicAuth('admin', 'G00d dogs stay quiet'))
+>>> page = requests.get('http://192.168.100.1/',auth=HTTPBasicAuth('admin', 'A password'))
 >>> jar = page.cookies
->>> page = requests.get('http://192.168.100.1/DocsisStatus.htm', cookies=jar, auth=HTTPBasicAuth('admin', 'G00d dogs stay quiet'))
+>>> page = requests.get('http://192.168.100.1/DocsisStatus.htm', cookies=jar, auth=HTTPBasicAuth('admin', 'A password'))
 >>> page.ok
 True
 >>> page.content
@@ -262,8 +264,8 @@ system) See:
 and
 <https://www.freedesktop.org/software/systemd/man/systemd.unit.html>
 
-We'll put our service in '/etc/systemd/system/ModemCheck.service'
-and 'mkdir /usr/local/lib/ModemCheck' and put our ModemCheck.py there.
+We'll put our service in `/etc/systemd/system/ModemCheck.service`
+and `mkdir /usr/local/lib/ModemCheck` and put our ModemCheck.py there.
 
 And finally, the point of the exercise was to get the errors as time
 series data.  ModemDisplay uses the json module to pull the data from
@@ -273,6 +275,10 @@ pretty straightforward for simple graphs like ours even though it
 produces really wonderfull ouput.  So a quick cron job to ssh the
 resulting html output to a server from time to time and we can easily
 track the state of the cable modem over time.
+
+Sample results can be seen at <https://holmgrown.com/ModemData.html> which
+is produced by a cron job running ModemDisplay.py and then rsyncing the
+resulting html to the server.
 
 [CM1150V-Page]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "http://192.168.100.1/"
 [CM1150V-Status]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Status.png "http://192.168.100.1/"
