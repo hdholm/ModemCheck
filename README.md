@@ -272,18 +272,21 @@ and
 We'll put our service in `/etc/systemd/system/ModemCheck.service`
 and `mkdir /usr/local/lib/ModemCheck` and put our ModemCheck.py there.
 
-And finally, the point of the exercise was to get the errors as time
+And finally, the point of the exercise was to see the errors as time
 series data.  ModemDisplay uses the json module to pull the data from
-the store created by ModemCheck.  Although the plotly module does A
+the store created by ModemCheck.  Although the [plotly](https://plotly.com/python/) module does A
 LOT and therefore is a little complicated to get into, it's really
 pretty straightforward for simple graphs like ours even though it
-produces really wonderfull ouput.  So a quick cron job to ssh the
+produces really amazing ouput.  So a quick cron job to rsync the
 resulting html output to a server from time to time and we can easily
 track the state of the cable modem over time.
 
-Sample results can be seen at <https://holmgrown.com/ModemData.html> which
-is produced by a cron job running ModemDisplay.py and then rsyncing the
-resulting html to the server.
+```bash
+06 */2 * * * /usr/local/lib/ModemCheck/ModemDisplay.py -d /var/log/ModemCheck/ModemData.json -o /var/log/ModemCheck/ModemData.html && rsync /var/log/ModemCheck/ModemData.html /var/log/ModemCheck/plotly.min.js hholm@holmgrown.com:secure_html/ModemCheck/ && rm -f /var/log/ModemCheck/*.{html,js}
+```
+
+Sample results can be seen at <https://holmgrown.com/ModemCheck/> which
+is produced by just such a cron job.
 
 [CM1150V-Page]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Page.png "http://192.168.100.1/"
 [CM1150V-Status]: https://raw.githubusercontent.com/hdholm/ModemCheck/main/CM1150V-Status.png "http://192.168.100.1/"
