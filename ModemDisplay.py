@@ -31,7 +31,8 @@
 import argparse
 import json
 import logging
-import plotly.express as px
+import math
+import plotly.graph_objects as go
 from time import gmtime, strftime
 
 logger = logging.getLogger(__name__)
@@ -46,7 +47,7 @@ def ISO_time(epochtime):
     return strftime('%Y-%m-%dT%H:%M:%SZ', gmtime(epochtime))
 
 
-def display_stats(datafile_name, outfile_name):
+def display_stats(datafile_name, outfile_name=None):
     """ Read the modem stats from datafile and produce an HTML chart
     """
 
@@ -54,10 +55,6 @@ def display_stats(datafile_name, outfile_name):
                  f'datafile_name={datafile_name} '
                  f'outfile_name={outfile_name}')
     running_data = {}
-    X = []  # X axis array for display
-    Y = []  # Y axis array for display
-    C = []  # Color array for display contains error type at X,Y
-    S = []  # Size array for display contains number of errors at X,Y
 
     # Get saved stats stored on disk
     with open(datafile_name) as f:
@@ -66,36 +63,48 @@ def display_stats(datafile_name, outfile_name):
         logger.debug(f'Recovered Running dict: {running_data}')
         logger.debug(f'Recovered Previous Boot: {prev_boot}')
         logger.debug(f'Recovered Previous Uptime: {prev_uptime}')
-    for event_time, data_points in running_data.items():
-        for freq in sorted(list(data_points.keys())):
-            if data_points[freq][0]:
-                X.append(ISO_time(int(event_time)))
-                Y.append(int(freq.rstrip(' Hz')))
-                C.append('Correctable')
-                S.append(data_points[freq][0])
-            if data_points[freq][1]:
-                X.append(ISO_time(int(event_time)))
-                Y.append(int(freq.rstrip(' Hz')))
-                C.append('Uncorrectable')
-                S.append(data_points[freq][1])
 
-    fig = px.scatter(x=X, y=Y, color=C, size=S,
-                     labels={'x': 'Date/Time (in UTC)',
-                             'y': 'Frequency (in Hz)',
-                             'color': 'Type of Error',
-                             'size': 'Number of Corrupted Packets',
-                             }, title="CM1150V Packet Errors")
+    fig = go.Figure()
+
+    max_size = 0
+    for index, err_type in enumerate(['Correctable', 'Uncorrectable']):
+        X = []  # X axis array for display
+        Y = []  # Y axis array for display
+        S = []  # size of data point arrary for dispplay
+        T = []  # array of text descriptions of data points
+        for event_time, data_points in running_data.items():
+            for freq in sorted(list(data_points.keys())):
+                if data_points[freq][index]:
+                    X.append(ISO_time(int(event_time)))
+                    Y.append(int(freq.rstrip(' Hz')))
+                    S.append(math.sqrt(data_points[freq][index]))
+                    T.append(
+                        f'{data_points[freq][index]} {err_type} Errors')
+        fig.add_trace(go.Scattergl(
+            x=X, y=Y, name=err_type, text=T, marker_size=S))
+        max_size = max(max_size, max(S))
+
+    fig.update_traces(
+        mode='markers',
+        marker=dict(
+            sizemode='area',
+            sizeref=2.*max_size/(50**2),
+            sizemin=3)
+    )
+
     fig.update_layout(legend=dict(orientation="h",
                                   yanchor="bottom",
                                   y=1.02,
                                   xanchor="right",
                                   x=1
-                                  ), xaxis_type='date')
-
+                                  ),
+                      xaxis=dict(type='date', title='Date/Time (in UTC)'),
+                      yaxis_title='Frequency (in Hz)',
+                      title="CM1150V Packet Errors")
     if outfile_name is None:
         fig.show()
     else:
-        fig.write_html(outfile_name)
+        fig.write_html(outfile_name, include_plotlyjs='directory')
 
 
 if __name__ == "__main__":
@@ -157,10 +166,13 @@ if __name__ == "__main__":
         fh.setLevel(logging.DEBUG)
     logger.addHandler(fh)
 
-    if args.outfile and len(args.outfile) > 1:
-        parser.error('Only one output file is allowed.')
-    if args.outfile == []:
-        # Use a default file
-        display_stats(args.datafile, 'ModemDisplay.html')
+    if args.outfile is None:
+        display_stats(args.datafile)
     else:
-        display_stats(args.datafile, args.outfile[0])
+        if len(args.outfile) > 1:
+            parser.error('Only one output file is allowed.')
+        if args.outfile == []:
+            # Use a default file
+            display_stats(args.datafile, 'ModemDisplay.html')
+        else:
+            display_stats(args.datafile, args.outfile[0])
