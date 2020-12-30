@@ -39,7 +39,7 @@ Steps that work for Linux Fedora 33. Others hosts may vary.
 the password to the modem.  Make sure permissions are restrictive with
 `chmod 700 /usr/local/lib/ModemCheck/ModemPassword`
 4. `cp ModemCheck.service /etc/systemd/system/`
-5. `cp modemcheck.rotate /etc/logrotate.d/modemcheck
+5. `cp modemcheck.rotate /etc/logrotate.d/modemcheck`
 6. `systemctl enable ModemCheck`
 7. `systemctl start ModemCheck`
 
