@@ -1,0 +1,10 @@
+/var/log/ModemCheck/ModemCheck.log {
+        weekly
+        missingok
+        rotate 4
+        compress
+        minsize 100k
+        postrotate
+            /bin/systemctl restart ModemCheck.service > /dev/null 2>/dev/null || true
+        endscript
+}
