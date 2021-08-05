@@ -183,7 +183,8 @@ def fetch_stats(password, user='admin', datafile_name='modem_stats.json'):
             logger.debug(
                 'No existing prev_run. Setting prev_run to current data.')
 
-    if boot_time != prev_boot:
+    # Sometimes on critical modem errors boot_time moves back a few seconds
+    if boot_time > prev_boot:
         # Error rates must have been reset to zero by a reboot,
         # so baseline every frequency as zero
         prev_run = freqs
@@ -196,7 +197,25 @@ def fetch_stats(password, user='admin', datafile_name='modem_stats.json'):
                     f'Last up {timedelta(seconds=prev_uptime)}')
 
     # see if we have any new errors to report/keep track of
+    # If the modem sees enough critial errors it will reset without
+    # "rebooting" so uptime looks good, even though all the counters
+    # have reset.  This is hard to detect, but we do our best.
     new_data = {}
+    for chan_freq in prev_run:
+        if chan_freq in list(freqs.keys()):
+            new_correctable = freqs[chan_freq][
+                'Correctable Err'] - prev_run[chan_freq]['Correctable Err']
+            new_uncorrectable = freqs[chan_freq][
+                'Uncorrectable Err'] - prev_run[chan_freq]['Uncorrectable Err']
+            # if any channel goes bad, reset them all and break out
+            if new_correctable < 0 or new_uncorrectable < 0:
+                logger.info(f'Channel: {chan_freq} Negative errors'
+                            ' - resetting previous counters')
+                for old_freq in prev_run:
+                    prev_run[old_freq]['Correctable Err'] = 0
+                    prev_run[old_freq]['Uncorrectable Err'] = 0
+                break
+
     for chan_freq in prev_run:
         if chan_freq in list(freqs.keys()):
             new_correctable = freqs[chan_freq][
