@@ -184,7 +184,8 @@ def fetch_stats(password, user='admin', datafile_name='modem_stats.json'):
                 'No existing prev_run. Setting prev_run to current data.')
 
     # Sometimes on critical modem errors boot_time moves back a few seconds
-    if boot_time > prev_boot:
+    # and there seems to a a one or two second "jitter" in the uptime.
+    if boot_time > prev_boot + 2:
         # Error rates must have been reset to zero by a reboot,
         # so baseline every frequency as zero
         prev_run = freqs
