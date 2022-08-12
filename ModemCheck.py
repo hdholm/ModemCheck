@@ -184,8 +184,8 @@ def fetch_stats(password, user='admin', datafile_name='modem_stats.json'):
                 'No existing prev_run. Setting prev_run to current data.')
 
     # Sometimes on critical modem errors boot_time moves back a few seconds
-    # and there seems to a a one or two second "jitter" in the uptime.
-    if boot_time > prev_boot + 2:
+    # and there seems to be a few second "jitter" in the uptime.
+    if boot_time > prev_boot + 60:
         # Error rates must have been reset to zero by a reboot,
         # so baseline every frequency as zero
         prev_run = freqs
@@ -234,10 +234,8 @@ def fetch_stats(password, user='admin', datafile_name='modem_stats.json'):
     for chan_freq in freqs:
         # Check for new frequencies (not in previous run) that have errors
         if chan_freq not in list(prev_run.keys()):
-            new_correctable = freqs[chan_freq][
-                'Correctable Err'] - prev_run[chan_freq]['Correctable Err']
-            new_uncorrectable = freqs[chan_freq][
-                'Uncorrectable Err'] - prev_run[chan_freq]['Uncorrectable Err']
+            new_correctable = freqs[chan_freq]['Correctable Err']
+            new_uncorrectable = freqs[chan_freq]['Uncorrectable Err']
             if (new_correctable or new_uncorrectable):
                 new_data[chan_freq] = (new_correctable, new_uncorrectable)
 
