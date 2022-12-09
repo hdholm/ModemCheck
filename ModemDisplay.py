@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # ModemDisplay.py - A simple script to monitor a Netgear CM1150V Cable Modem.
 #                   It depends on ModemCheck.py to do most of the work before
@@ -70,7 +70,7 @@ def display_stats(datafile_name, outfile_name=None):
     for index, err_type in enumerate(['Correctable', 'Uncorrectable']):
         X = []  # X axis array for display
         Y = []  # Y axis array for display
-        S = []  # size of data point arrary for dispplay
+        S = []  # size of data point arrary for display
         T = []  # array of text descriptions of data points
         for event_time, data_points in running_data.items():
             for freq in sorted(list(data_points.keys())):
@@ -80,9 +80,10 @@ def display_stats(datafile_name, outfile_name=None):
                     S.append(math.sqrt(data_points[freq][index]))
                     T.append(
                         f'{data_points[freq][index]} {err_type} Errors')
-        fig.add_trace(go.Scattergl(
-            x=X, y=Y, name=err_type, text=T, marker_size=S))
-        max_size = max(max_size, max(S))
+        if (len(S) > 0):
+            fig.add_trace(go.Scattergl(
+                x=X, y=Y, name=err_type, text=T, marker_size=S))
+            max_size = max(max_size, max(S))
 
     fig.update_traces(
         mode='markers',

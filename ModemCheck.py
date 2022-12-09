@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # ModemCheck.py - A simple script to monitor a Netgear CM1150V Cable Modem.
 #                 It may or may not work for other Netgear Cable Modems.

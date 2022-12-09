@@ -8,7 +8,7 @@ StartLimitIntervalSec=30
 Type=simple
 Restart=always
 RestartSec=5
-ExecStart=/usr/local/lib/ModemCheck/ModemCheck.py -l /usr/local/lib/ModemCheck/ModemCheck.log -vv -q -p /usr/local/lib/ModemCheck/ModemPassword -d /usr/local/lib/ModemCheck/ModemData.json
+ExecStart=/usr/local/lib/ModemCheck/ModemCheck.py -l /var/log/ModemCheck/ModemCheck.log -vv -q -p /usr/local/lib/ModemCheck/ModemPassword -d /var/log/ModemCheck/ModemData.json
 
 [Install]
 WantedBy=multi-user.target

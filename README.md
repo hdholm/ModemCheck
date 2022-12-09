@@ -19,19 +19,16 @@ with ModemCheck.py and ModemDisplay.py fire them up with --help
 for some basic command line help.
 
 Things you may not already have in your python implemenation that
-you'll need.  If you pip install remember you may want to do that
-as superuser so that the modules will be available to whatever
-user you ultimately use to run the modules. 
+you'll need.  You can pip install plotly, pandas and pytimeparse
+but at least on Fedora Linux you can use the system package management
+as well.
 
-1. plotly - which requires pandas.  This is needed by ModemDisplay.
-'pip install plotly' On Fedora 33 I simpy used `dnf install
-python3-pandas` to get the pandas prequisite, but you should be able
-to pip install as well.
-2. pytimeparse - needed for some deltatime manipulation.  Again `pip
-install pytimeparse` should do the job. 
+1. plotly - which requires a lot of prequisites.  This is needed by
+ ModemDisplay and pytimeparse which is needed for some deltatime
+manipulation. On Fedora 37 I simply used
+`dnf install python3-plotly python3-pytimeparse`
 
-
-Steps that work for Linux Fedora 33. Others hosts may vary.
+Steps that work for Linux Fedora 37. Other systems may vary.
 
 1. `mkdir /usr/local/lib/ModemCheck/` and `mkdir /var/log/ModemCheck/`
 2. `cp ModemCheck.py /usr/local/lib/ModemCheck/`
@@ -42,6 +39,14 @@ the password to the modem.  Make sure permissions are restrictive with
 5. `cp modemcheck.rotate /etc/logrotate.d/modemcheck`
 6. `systemctl enable ModemCheck`
 7. `systemctl start ModemCheck`
+8. Diplay the results. Something like the below cron entry can be
+used to periodically updat the results somewhere.
+```bash
+06 */2 * * * /usr/local/lib/ModemCheck/ModemDisplay.py -d /var/log/ModemCheck/ModemData.json -o /var/log/ModemCheck/ModemData.html && rsync /var/log/ModemCheck/ModemData.html /var/log/ModemCheck/plotly.min.js hholm@holmgrown.com:secure_html/ModemCheck/ && rm -f /var/log/ModemCheck/*.{html,js}
+```
+9. You'll need the plotly javascript code to include in the
+directly with the html output (or modify ModemDisplay.py
+to use the cdn version if you want.  See [plotly download](https://plotly.com/javascript/getting-started/).
 
 ## How the Sausage Gets Made: A Tale of Comcast, Netgear, and Python Hackery.
 
