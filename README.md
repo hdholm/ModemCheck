@@ -1,16 +1,16 @@
-# ModemCheck
-Simple python scripts to monitor a Netgear CM1150V Cable
-Modem. They may or may not work for other Netgear Cable Modems.
+# ModemData
+Simple python module to monitor a Netgear CM1150V Cable
+Modem. They may or may not work for other Cable Modems although it's
+designed to be relatively extendable.
 
-Bottom Line Up Front, the scripts to pull the data off the modem, run
-that as a Linux server, and display the results are here and use and
-installation below has pretty much everything you need.  If you can't
-stand seeing the sausage get made, you may want to avoid the rest
+Bottom Line Up Front, the installation information below has pretty
+much everything you need to set this up on a linux (and maybe windows)
+host and generate pretty html about the state of your cable service
+over time.  If you can't stand seeing the sausage get made, you may
+want to avoid the rest
 
 Comments and improvements are most welcome, but it's doubtful I'll
-spend much more time on this unless circumstances change.  For the
-record, since I created this my network performance has been great
-so there's very little for it to do.
+spend much more time on this unless circumstances change.
 
 ## Use and Installation
 
@@ -54,24 +54,25 @@ to use the cdn version if you want.  See [plotly download](https://plotly.com/ja
 
 I have a
 [Netgear CM1150V Cable Modem](https://www.netgear.com/home/products/networking/cable-modems-routers/CM1150V.aspx)
-on the Comcast, or Xfinity, or whatever the monopolistic entity is
-calling itself today, network. It's been a bumpy ride.  Leaving for
+on the Comcast - or Xfinity, or whatever the monopolistic entity is
+calling itself today - network. It's been a bumpy ride.  Leaving for
 another time the stories (yes, more than one) of Comcast installation
 fails, today I'll describe a seemingly simple problem with a less than
 simple solution.  Because, well, things...
 
-So my cable service had been sketchy for a while, but roughly a
-month-and-a-half ago a miracle happened.  Right when I was thinking my
+So my cable service had been sketchy for a while, but then something
+happened.  Right when I was thinking my
 service was so crappy that it was time to bite the bullet and call
 Comcast service, it got better. Not just a little better.  Television
-pixelated far less; Internet seemed snappier, and most reassuring from
+pixelated far less; Internet seemed snappier; and most reassuring from
 an objective point of view, the statistics on my cable modem's
 downstream channel bonding were orders of magnitude better.  Signal to
 noise ratios (SNR) went from just barely acceptable to great.  The
 same with power levels.  And packet errors dropped to zero - absolute
 zero - for weeks at a time.  But, alas, it was too good to last. SNR
 and power are still acceptable, but not what they were.  There are
-increasely disturbing numbers of packet errors.  Unfortunately, the
+increasely disturbing numbers of packet errors particularly on one
+frequency.  Unfortunately, the
 CM1150V only reports those as number of correctable and uncorrectable
 errors on each frequency since the modem last booted. That's not really
 helpfull for registering complaints with Comcast, who I'm sure will be
@@ -81,20 +82,24 @@ Overall I've been pleased with the CM1150V.  It's triple-play voice
 feature works (but only with Comcast.)  After some poking around I've
 discovered that both voice ports (RJ11 jacks) on the modem are active
 and that one has precedence; picking up that line will disconnect the
-other line.  A perfect setup for connecting the alarm system.  I only
-have 200 Mb/s cable service because that's the best Comcast can seem
-to manage in my neighborhood.  However the modem would support multi-gig
+other line.  A perfect setup for connecting the alarm system.  I have
+have 1,200 Mb/s cable service.  The modem will support multi-gig
 and has LAGG ports to support multiple bonded 1 Gb/s connections.
-Because I could, I enabled the LAGG ports to my OPNsense firewall. That
+I enabled the LAGG ports to my OPNsense firewall. That
 resulted in connection speeds that would drop percipitiously after a
-day or so. After far too much troubleshooting I discoverd it's a known,
+day or so. After far too much troubleshooting I discoverd it was a known,
 but obscure, issue with the LAGG ports.  For more see
 [here](https://community.netgear.com/t5/Cable-Modems-Routers/CM1150V-LACP-LAGG-Firmware-Issue-Comcast-V2-02-04-and-V2-02-03/td-p/1792853)
-Netgear has reportedly fixed that issue, but, in true Comcast
-fashion, they won't/haven't pushed the updated firmware to the modems.
-I'm sure they're busy.  It's only been *more than a year.*
-And like the vast majority of DOCSIS compatible equipment, it can *only*
-be updated by Comcast.  Despite being "customer owned" it's still completely
+Netgear had reportedly fixed that issue, but, in true Comcast
+fashion, they hadn't pushed the updated firmware to the modems.
+After *more than a year.* I was finally able to convice a tier 1
+tech that despite him "knowing" from his "years" of experience,
+that upgrading cable modem firmware was a customer responsibility,
+that in fact the DOCSIS standard requires that it only be done from
+the CMTS (i.e., Comcast) and got him to escalate it to tier 2. A
+couple days later my firmware version magically went from V2.02.04 to
+V4.12.04 and the speed issues, as expected, resolved.
+Despite being "customer owned" the cable modem is still completely
 controlled by the cable company.  All this just to provide some background
 that maybe I should have expected this journey to be less
 straightforward than expected.
@@ -107,7 +112,7 @@ where they can build some useful scripts for themselves.  It is not
 CompSci 101.  But it seemed like this would be a good example to have
 laying around of how scratching your own itch with your own script
 works.  Fortunately or unfortunately, it turned out to be a really
-excellent example of how this really works in practice.
+excellent example of how iterative this is in practice.
 
 So, aim your broswer at 192.168.100.1, authenticate to the modem, and
 a "basic" configuration page is shown.
@@ -115,20 +120,22 @@ a "basic" configuration page is shown.
 ![CM1150V WebPage][CM1150V-Page]
 
 Click on the "Cable Connection" and a useful page of statistics is
-presented. Assuming you only care about the total since the modem last booted.
+presented. Assuming you only care about the current signal parameters
+and the *total* packet errors since the modem last booted.
 
 ![CM1150V Cable Status][CM1150V-Status]
 
-The data seems to be in a bunch of HTML tables.  An excellent adventure.
+The data seems to be in a bunch of HTML tables.  It seemed like it
+would be an excellent example of straightforward HTML scraping.
 We'll fire up Python with some [BeautifulSoup](https://www.crummy.com/software/BeautifulSoup/bs4/doc/)
 and be done in a flash.  So lets take a look at the page source to
 see what we really need to scrape.
 
-It's an HTML frame-based page. Well isn't that very 1999.  But a quick
+It's an HTML frame-based page.  Well isn't that very 1999.  But a quick
 look at that page source and clearly we want the frame produced by
 http://192.168.100.1/DocsisStatus.htm - the source of the
 interesting frame.  Pop that into Chrome's view-source and ... W.T.F.
-That's a LOT of JavaScript for such a simple page.
+That's a *LOT* of JavaScript for such a simple page.
 
 ![view-source page][CM1150V-Data]
 
@@ -145,7 +152,7 @@ may all be some odd way of reusing SNMP data, but I'm feeling kind
 of nauseated looking at it. Something about how sausage and laws get
 made comes to mind.  The data we're looking for is highlighted in
 the screenshot.  Note the line-number sidebar, we're almost 300 lines
-of mostly JavaScript into this file.
+of mostly JavaScript into this apparently simple file.
 
 But the news isn't all bad.  Since the strings are static data in the
 JavaScript, we don't really need to reverse engineer JavaScript, and
